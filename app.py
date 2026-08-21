@@ -12,6 +12,7 @@ import qrcode
 
 # --- Налаштування Бази Даних ---
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./lms.db")
+
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
