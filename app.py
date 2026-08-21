@@ -1,4 +1,5 @@
 import os
+import json
 import io
 import base64
 import random
@@ -9,6 +10,20 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Text, JSON
 from sqlalchemy.orm import declarative_base, sessionmaker, Session, relationship
 import qrcode
+
+# Шлях до вашого файлу з тестами
+TESTS_FILE = "tests.json"
+
+def load_tests():
+    if os.path.exists(TESTS_FILE):
+        with open(TESTS_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return []
+
+@app.get("/api/tests")
+def get_tests():
+    # Цей ендпоінт віддає ваші тести на сайт (фронтенд)
+    return load_tests()
 
 # --- Налаштування Бази Даних ---
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./lms.db")
