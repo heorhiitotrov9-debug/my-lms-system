@@ -106,11 +106,26 @@ async def login_page(request: Request, db: Session = Depends(get_db)):
     return templates.TemplateResponse(request, "login.html", {"error": None})
 
 @app.post("/login")
-async def login(request: Request, response: Response, email: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
+async def login(
+    request: Request, 
+    response: Response, 
+    email: str = Form(...), 
+    password: str = Form(...), 
+    redirect: str = Form(None), 
+    db: Session = Depends(get_db)
+):
     user = db.query(User).filter(User.email == email, User.password == password).first()
     if not user:
         return templates.TemplateResponse(request, "login.html", {"error": "Невірний логін або пароль"})
-    res = RedirectResponse(url=f"/{user.role}", status_code=303)
+    
+    # Куди перенаправити після успішного входу
+    target_url = redirect if redirect else f"/{user.role}"
+    if user.role == "student" and redirect:
+        target_url = redirect
+    elif user.role != "student" and redirect:
+        target_url = f"/{user.role}"
+
+    res = RedirectResponse(url=target_url, status_code=303)
     res.set_cookie(key="user_id", value=str(user.id))
     return res
 
