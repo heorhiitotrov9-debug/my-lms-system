@@ -258,6 +258,12 @@ async def student_page(request: Request, submitted: bool = False, db: Session = 
 @app.get("/student/take-test/{test_id}", response_class=HTMLResponse)
 async def take_test(request: Request, test_id: int, db: Session = Depends(get_db)):
     user = get_current_user(request, db)
+    
+    # Якщо курсант не залогінений на телефоні — перенаправляємо на сторінку входу,
+    # але запам'ятовуємо куди він хотів зайти, щоб повернути його після логіну (або кидаємо на логін)
+    if not user or user.role != "student":
+        return RedirectResponse(url=f"/?redirect=/student/take-test/{test_id}", status_code=303)
+    
     test = db.query(Test).filter(Test.id == test_id).first()
     if not test:
         return RedirectResponse(url="/student", status_code=303)
