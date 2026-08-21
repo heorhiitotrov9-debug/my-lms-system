@@ -1,0 +1,82 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "admin@lms.com",
+      "password": "123",
+      "role": "admin",
+      "name": "Головний Адміністратор"
+    },
+    {
+      "id": 2,
+      "name": "teacher@lms.com",
+      "email": "teacher@lms.com",
+      "password": "123",
+      "role": "teacher"
+    },
+    {
+      "id": 3,
+      "name": "student@lms.com",
+      "email": "student@lms.com",
+      "password": "123",
+      "role": "student",
+      "group_id": 1
+    }
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "code": "1",
+      "course": "1"
+    }
+  ],
+  "tests": [
+    {
+      "id": 1,
+      "teacher_id": 2,
+      "subject": "Тактична підготовка",
+      "title": "Дії відділення",
+      "questions": [
+        {
+          "id": 1,
+          "text": "Як ",
+          "options": {
+            "A": "так ",
+            "B": "ось так ",
+            "C": "може так ",
+            "D": "чі вот так"
+          },
+          "correct": "A"
+        }
+      ]
+    }
+  ],
+  "qr_codes": [
+    {
+      "id": 1,
+      "teacher_id": 2,
+      "test_id": 1,
+      "test_title": "Дії відділення",
+      "subject": "Тактична підготовка",
+      "qr_base64": "iVBORw0KGgoAAAANSUhEUgAAAXIAAAFyAQAAAADAX2ykAAACz0lEQVR4nO1bW46jQAwsG6T5bKQcIEeBq+VIe4NwlDlAJPgcCeSV3TwSRuowWiULg+uD0LgUWV1x2904JPgJav4RHXB+GvzEvoTz0+An9iWcnwY/sS/h/DT4iX0J5x9hfmhADqp0XOugMlM72qoN+78efDB+Hj/Kq17bEwTocyA0KjJ0mHXGoPf4w85/yfy0c8DmQPlJUU/SZxbY//j9a8GrmRHOTyNfjAlBQHWhMd0UELSPdp/PNHj7/J6A0IGqIDLE9H/1JwlOm7/hqPwgIpaDy88PiReY0gBEpNu6/2vBx1yf66hk9mBrT0KTyG/yh53/An3l7kn4IkHbk9TnTg2PB5g+/2nwJvlkZXLVWtWcieXfuD7bTpiKgbJV/9eDD1o/twU0YHOpi0aL6JvWzxAqm1NHaGmr/rPz0xDFcNdofWUPGkCuyPS2GyhmuPp8psEb5QcR1GdTuieq4voMwHbCd0XWVv1fCz4YHxaccg0aps2YessmG5/JfPH43au+iKqqjFfdCceVulG5p3LL1+f96it6tDHE72S4av6NZx5qcH13vj+Cbn1NRhN0TMIWv1+ef/epL+6L4/mZ1c9hyrrz3db8Z+ev3R9hyr9zkYVhafb8u9PfG2Jcxgp5Kqii0rD9r6nv+Xfn+jZ6r6E7nW+YqkM57fG79/6rsyZXO39ucxAVw/6X9Ezahm/1Zz34B9xDr8/ysBaP8YtYTvv55G/pn4S9H7zE/pw+hjNq77/at764f6ug0A3R5Xx/sPVef1aD11OP/n4Q5R9rg831/WAmhNDnY2PH2/xh5790fiSeVGp/bKnhbBuni6/Pv+f3GbRqVpEv9DH2T/r55N7X56CVs/Y6W+tkXei/FsJN+3MAKpv+Xf6w81/aP0nxEm7aZJer8NquM7fg+fynwRvjk/+/e1d6sfOT4LT5G5yfBj+xL+H8NPiJfQnnp7H3+fkL9r+iSNAE8J0AAAAASUVORK5CYII=",
+      "url": "http://127.0.0.1:8000/student/take-test/1"
+    }
+  ],
+  "results": [
+    {
+      "student_id": 3,
+      "student_name": "student@lms.com",
+      "test_title": "Дії відділення",
+      "subject": "Тактична підготовка",
+      "score": "0%"
+    },
+    {
+      "id": 2,
+      "student_id": 3,
+      "student_name": "student@lms.com",
+      "test_title": "Дії відділення",
+      "subject": "Тактична підготовка",
+      "score": "100%"
+    }
+  ]
+}

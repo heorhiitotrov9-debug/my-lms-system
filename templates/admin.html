@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Адмін-панель — LMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #121212; color: #e0e0e0; }
+        .card { background: #1e1e1e; border: 1px solid #2d2d2d; }
+        .table-dark { background-color: #1e1e1e; }
+        .form-control, .form-select { background-color: #2b2b2b; color: #fff; border: 1px solid #3d3d3d; }
+        .form-control:focus, .form-select:focus { background-color: #333; color: #fff; }
+    </style>
+</head>
+<body class="p-4">
+    <div class="container-fluid">
+        <!-- Шапка -->
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary">
+            <div>
+                <h2 class="m-0 text-white">Панель Адміністратора</h2>
+                <small class="text-muted">Користувач: {{ user.name }}</small>
+            </div>
+            <a href="/logout" class="btn btn-outline-danger">Вийти</a>
+        </div>
+
+        <div class="row g-4">
+            <!-- Ліва колонка: Форми додавання -->
+            <div class="col-md-4">
+                <!-- Додати викладача -->
+                <div class="card p-3 mb-4 shadow">
+                    <h5 class="text-info mb-3">Додати Викладача</h5>
+                    <form action="/admin/add-teacher" method="post">
+                        <div class="mb-2">
+                            <input type="text" name="name" class="form-control" placeholder="ПІБ (напр. Сидоренко А.П.)" required>
+                        </div>
+                        <div class="mb-2">
+                            <input type="email" name="email" class="form-control" placeholder="Email" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="password" name="password" class="form-control" placeholder="Пароль" required>
+                        </div>
+                        <button type="submit" class="btn btn-info w-100 text-white">Зберегти Викладача</button>
+                    </form>
+                </div>
+
+                <!-- Додати Взвод / Групу -->
+                <div class="card p-3 mb-4 shadow">
+                    <h5 class="text-warning mb-3">Створити Групу / Взвод</h5>
+                    <form action="/admin/add-group" method="post">
+                        <div class="mb-2">
+                            <input type="text" name="code" class="form-control" placeholder="Назва (напр. Взвод 102)" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" name="course" class="form-control" placeholder="Курс (напр. 2 курс)" required>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100">Створити Групу</button>
+                    </form>
+                </div>
+
+                <!-- Додати Курсанта -->
+                <div class="card p-3 shadow">
+                    <h5 class="text-success mb-3">Додати Курсанта / Слухача</h5>
+                    <form action="/admin/add-student" method="post">
+                        <div class="mb-2">
+                            <input type="text" name="name" class="form-control" placeholder="ПІБ Курсанта" required>
+                        </div>
+                        <div class="mb-2">
+                            <input type="email" name="email" class="form-control" placeholder="Email" required>
+                        </div>
+                        <div class="mb-2">
+                            <input type="password" name="password" class="form-control" placeholder="Пароль" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-muted small mb-1">Оберіть Взвод/Групу</label>
+                            <select name="group_id" class="form-select" required>
+                                {% for g in groups %}
+                                    <option value="{{ g.id }}">{{ g.code }} ({{ g.course }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Додати Курсанта</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Права колонка: Списки та Зведений Журнал -->
+            <div class="col-md-8">
+                <!-- Зведений журнал усіх результатів -->
+                <div class="card p-3 mb-4 shadow border-success">
+                    <h5 class="text-success mb-3">Загальний Журнал Успішності (Усі Результати)</h5>
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover mb-0 align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Курсант</th>
+                                    <th>Дисципліна</th>
+                                    <th>Тест</th>
+                                    <th class="text-end">Результат</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for r in results %}
+                                <tr>
+                                    <td><strong>{{ r.student_name }}</strong></td>
+                                    <td><span class="badge bg-info text-dark">{{ r.subject }}</span></td>
+                                    <td>{{ r.test_title }}</td>
+                                    <td class="text-end"><span class="badge bg-success fs-6">{{ r.score }}</span></td>
+                                </tr>
+                                {% else %}
+                                <tr><td colspan="4" class="text-muted text-center">Результатів тестувань у системі ще немає</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Список груп -->
+                <div class="card p-3 mb-4 shadow">
+                    <h5 class="text-warning mb-3">Список Існуючих Груп / Взводів</h5>
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover mb-0 align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Назва / Взвод</th>
+                                    <th>Курс</th>
+                                    <th class="text-end">Дія</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for g in groups %}
+                                <tr>
+                                    <td>{{ g.id }}</td>
+                                    <td><strong>{{ g.code }}</strong></td>
+                                    <td><span class="badge bg-secondary">{{ g.course }}</span></td>
+                                    <td class="text-end">
+                                        <a href="/admin/delete-group/{{ g.id }}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Видалити групу?')">Видалити</a>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr><td colspan="4" class="text-muted text-center">Груп ще не створено</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Список викладачів -->
+                <div class="card p-3 mb-4 shadow">
+                    <h5 class="text-info mb-3">Список Викладачів</h5>
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover mb-0 align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>ПІБ</th>
+                                    <th>Email</th>
+                                    <th class="text-end">Дія</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for t in teachers %}
+                                <tr>
+                                    <td>{{ t.id }}</td>
+                                    <td><strong>{{ t.name }}</strong></td>
+                                    <td>{{ t.email }}</td>
+                                    <td class="text-end">
+                                        <a href="/admin/delete-user/{{ t.id }}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Видалити викладача?')">Видалити</a>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr><td colspan="4" class="text-muted text-center">Викладачів ще не додано</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Список курсантів -->
+                <div class="card p-3 shadow">
+                    <h5 class="text-success mb-3">Список Курсантів / Слухачів</h5>
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover mb-0 align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>ПІБ</th>
+                                    <th>Група / Взвод</th>
+                                    <th>Email</th>
+                                    <th class="text-end">Дія</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for s in students %}
+                                <tr>
+                                    <td>{{ s.id }}</td>
+                                    <td><strong>{{ s.name }}</strong></td>
+                                    <td>
+                                        {% if s.group_name == 'Без групи' %}
+                                            <span class="badge bg-danger">{{ s.group_name }}</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ s.group_name }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ s.email }}</td>
+                                    <td class="text-end">
+                                        <a href="/admin/delete-user/{{ s.id }}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Видалити курсанта?')">Видалити</a>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr><td colspan="5" class="text-muted text-center">Курсантів ще не додано</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
