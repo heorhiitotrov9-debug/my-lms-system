@@ -279,7 +279,11 @@ async def submit_test(request: Request, test_id: int, db: Session = Depends(get_
     if test:
         correct = sum(1 for q in test.questions if form_data.get(f"question_{q['id']}") == q["correct"])
         score = f"{int((correct / len(test.questions)) * 100)}%"
-        db.add(TestResult(student_name=user.name, subject=test.subject, test_title=test.title, score=score))
+        
+        # Якщо телефон не передав куки викладача/адміна, записуємо анонімно або за логіном
+        student_name = user.name if user else "Курсант (мобільний)"
+        
+        db.add(TestResult(student_name=student_name, subject=test.subject, test_title=test.title, score=score))
         db.commit()
 
     return RedirectResponse(url="/student?submitted=true", status_code=303)
