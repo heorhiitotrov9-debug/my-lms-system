@@ -19,16 +19,19 @@
         {% endif %}
 
         <form action="/login" method="post">
-            <div class="mb-3">
-                <label class="form-label">Email / Логін</label>
-                <input type="email" name="email" class="form-control bg-dark text-white border-secondary" required placeholder="user@lms.com">
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Пароль</label>
-                <input type="password" name="password" class="form-control bg-dark text-white border-secondary" required placeholder="••••••">
-            </div>
-            <button type="submit" class="btn btn-primary w-100 py-2 mt-2">Увійти</button>
-        </form>
+    <!-- Додаємо передачу редиректу, якщо він є -->
+    <input type="hidden" name="redirect" value="{{ request.query_params.get('redirect', '') }}">
+    
+    <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" name="email" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Пароль</label>
+        <input type="password" name="password" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Увійти</button>
+</form>
 
         <div class="mt-4 pt-3 border-top border-secondary text-secondary style="font-size: 0.8rem;">
             <strong>Тестові акаунти (пароль: 123):</strong><br>
